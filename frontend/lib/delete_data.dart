@@ -24,7 +24,7 @@ class DeleteScreenState extends State<DeleteScreen> {
           TextButton(
             onPressed: () async {
               Navigator.pop(context);
-              await _deletePerson(nim);
+              await _deletePerson(nimController.text);
             },
             child: const Text('Hapus', style: TextStyle(color: Colors.red)),
           ),
@@ -36,11 +36,15 @@ class DeleteScreenState extends State<DeleteScreen> {
   Future<void> _deletePerson(String nim) async {
     setState(() => _isLoading = true);
     try {
-      await Api().deletePerson(nim);
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Data berhasil dihapus!')),
-      );
-      nimController.clear();
+      final response = await Api.deletePerson(nim);
+      if (response['status'] == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Data berhasil dihapus!')),
+        );
+        nimController.clear();
+      } else {
+        throw Exception('Gagal menghapus data: ${response.statusCode}');
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Terjadi kesalahan: $e')),

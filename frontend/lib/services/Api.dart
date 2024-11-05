@@ -62,6 +62,11 @@ class Api {
     }
   }
 
+  static Future<http.Response> deletePerson(String nim) async {
+    final url = Uri.parse('$baseUrl/delete/$nim');
+    return await http.delete(url);
+  }
+
   static Map<String, dynamic> _handleResponse(http.Response response) {
     try {
       if (response.statusCode >= 200 && response.statusCode < 300) {
